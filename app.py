@@ -39,6 +39,14 @@ st.markdown(
         font-size: 0.85rem;
         margin-bottom: 10px;
       }
+      .footer {
+        text-align: center;
+        color: rgba(0,0,0,0.45);
+        font-size: 0.85rem;
+        margin-top: 40px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(0,0,0,0.08);
+      }
     </style>
     """,
     unsafe_allow_html=True,
@@ -48,11 +56,9 @@ st.markdown(
 # Helper functions
 # =========================
 def effective_lv(lv: int) -> int:
-    """基礎 130 用"""
     return max(0, lv - BASE_LV)
 
 def effective_relic_lv(lv: int) -> int:
-    """古遺物基礎 13"""
     return max(0, lv - RELIC_BASE_LV)
 
 def get_grade(score: int) -> str:
@@ -72,7 +78,6 @@ def get_grade(score: int) -> str:
         return "D"
 
 def apply_bulk(prefix: str, count: int):
-    """把 bulk 值實際寫入該項目的所有欄位"""
     bulk_val = st.session_state.get(f"{prefix}_bulk")
     for i in range(count):
         st.session_state[f"{prefix}_{i}"] = bulk_val
@@ -99,12 +104,8 @@ st.caption("所有項目僅計算『超過基礎等級』的部分。")
 # =========================
 st.sidebar.header("⚙️ 設定")
 
-base_stars = st.sidebar.number_input(
-    "本季初始原初之星", min_value=0, value=45, step=1
-)
-convert_div = st.sidebar.number_input(
-    "原初之星換算除數（總分 ÷ X）", min_value=1, value=27, step=1
-)
+base_stars = st.sidebar.number_input("本季初始原初之星", min_value=0, value=45, step=1)
+convert_div = st.sidebar.number_input("原初之星換算除數（總分 ÷ X）", min_value=1, value=27, step=1)
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("📈 加分規則")
@@ -120,28 +121,18 @@ p_relic = st.sidebar.number_input("古遺物 +1 加分", value=33)
 c1, c2 = st.columns(2)
 
 with c1:
-    prev_season_stars = st.number_input(
-        "上季原初之星", min_value=0, value=0, step=1
-    )
+    prev_season_stars = st.number_input("上季原初之星", min_value=0, value=0, step=1)
 
 with c2:
-    char_lv = st.number_input(
-        "目前角色等級（基礎 130）", min_value=1, value=130, step=1
-    )
+    char_lv = st.number_input("目前角色等級（基礎 130）", min_value=1, value=130, step=1)
 
-char_eff = effective_lv(char_lv)
-score_char = char_eff * p_char
-st.caption(f"角色計分：max(0, {char_lv} − 130) = {char_eff} 級 → {score_char} 分")
+score_char = effective_lv(char_lv) * p_char
 
 # =========================
 # 裝備（5）
 # =========================
 st.subheader("🛡 裝備（5 欄）")
-
-bulk_ui(
-    "裝備快速輸入（套用到 5 欄）",
-    "基礎等級 130，輸入一個等級會覆蓋裝備 1～5。"
-)
+bulk_ui("裝備快速輸入（套用到 5 欄）", "基礎等級 130")
 
 st.number_input(
     "equip_bulk_label",
@@ -158,9 +149,7 @@ equip_cols = st.columns(5)
 equip_eff = []
 for i in range(5):
     with equip_cols[i]:
-        lv = st.number_input(
-            f"裝備 {i+1}", key=f"equip_{i}", value=130, min_value=1
-        )
+        lv = st.number_input(f"裝備 {i+1}", key=f"equip_{i}", value=130, min_value=1)
         equip_eff.append(effective_lv(lv))
 score_equip = sum(equip_eff) * p_equip
 
@@ -168,11 +157,7 @@ score_equip = sum(equip_eff) * p_equip
 # 技能（8）
 # =========================
 st.subheader("📘 技能（8 欄）")
-
-bulk_ui(
-    "技能快速輸入（套用到 8 欄）",
-    "基礎等級 130，輸入一個等級會覆蓋技能 1～8。"
-)
+bulk_ui("技能快速輸入（套用到 8 欄）", "基礎等級 130")
 
 st.number_input(
     "skill_bulk_label",
@@ -189,9 +174,7 @@ skill_cols = st.columns(4)
 skill_eff = []
 for i in range(8):
     with skill_cols[i % 4]:
-        lv = st.number_input(
-            f"技能 {i+1}", key=f"skill_{i}", value=130, min_value=1
-        )
+        lv = st.number_input(f"技能 {i+1}", key=f"skill_{i}", value=130, min_value=1)
         skill_eff.append(effective_lv(lv))
 score_skill = sum(skill_eff) * p_skill
 
@@ -199,11 +182,7 @@ score_skill = sum(skill_eff) * p_skill
 # 幻獸（4）
 # =========================
 st.subheader("🐉 幻獸（4 欄）")
-
-bulk_ui(
-    "幻獸快速輸入（套用到 4 欄）",
-    "基礎等級 130，輸入一個等級會覆蓋幻獸 1～4。"
-)
+bulk_ui("幻獸快速輸入（套用到 4 欄）", "基礎等級 130")
 
 st.number_input(
     "beast_bulk_label",
@@ -220,21 +199,15 @@ beast_cols = st.columns(4)
 beast_eff = []
 for i in range(4):
     with beast_cols[i]:
-        lv = st.number_input(
-            f"幻獸 {i+1}", key=f"beast_{i}", value=130, min_value=1
-        )
+        lv = st.number_input(f"幻獸 {i+1}", key=f"beast_{i}", value=130, min_value=1)
         beast_eff.append(effective_lv(lv))
 score_beast = sum(beast_eff) * p_beast
 
 # =========================
-# 古遺物（20 欄，基礎 = 13）
+# 古遺物（20，基礎 13）
 # =========================
 st.subheader("🔮 古遺物")
-
-bulk_ui(
-    "古遺物總快速輸入（套用到全部 20 欄）",
-    "基礎等級為 13，僅計算超過 13 的部分。"
-)
+bulk_ui("古遺物總快速輸入（套用到全部 20 欄）", "基礎等級 13")
 
 st.number_input(
     "relic_bulk_label",
@@ -250,19 +223,12 @@ st.number_input(
 elements = ["光", "暗", "風", "水", "火"]
 relic_eff = []
 idx = 0
-
 for element in elements:
     st.markdown(f"### {element}")
     cols = st.columns(4)
     for i in range(4):
         with cols[i]:
-            lv = st.number_input(
-                f"{element}-{i+1}",
-                key=f"relic_{idx}",
-                value=13,
-                min_value=1,
-                step=1
-            )
+            lv = st.number_input(f"{element}-{i+1}", key=f"relic_{idx}", value=13, min_value=1)
             relic_eff.append(effective_relic_lv(lv))
             idx += 1
 
@@ -271,14 +237,7 @@ score_relic = sum(relic_eff) * p_relic
 # =========================
 # Compute & Output
 # =========================
-season_score = (
-    score_char
-    + score_equip
-    + score_skill
-    + score_beast
-    + score_relic
-)
-
+season_score = score_char + score_equip + score_skill + score_beast + score_relic
 season_grade = get_grade(season_score)
 
 earned_stars = season_score // convert_div
@@ -299,13 +258,10 @@ g1, g2 = st.columns(2)
 g1.metric("上季原初之星", f"{prev_season_stars:,}")
 g2.metric("總原初之星（上季 + 本季）", f"{grand_total_stars:,}")
 
-with st.expander("📊 得分明細"):
-    st.write({
-        "角色": score_char,
-        "裝備": score_equip,
-        "技能": score_skill,
-        "幻獸": score_beast,
-        "古遺物": score_relic,
-        "本季總分": season_score,
-        "本季評級": season_grade
-    })
+# =========================
+# Footer（開發者署名）
+# =========================
+st.markdown(
+    '<div class="footer">開發者：甜蝦麵</div>',
+    unsafe_allow_html=True
+)
