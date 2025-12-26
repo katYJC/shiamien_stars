@@ -477,6 +477,19 @@ with st.expander("📊 得分明細（各系統貢獻）"):
 # =========================
 st.markdown(
     """
+    <div class="brand-footer">
+        <div class="brand-title">原初之星計算器｜Season 2</div>
+        <div class="brand-author">by 甜蝦麵(浮世千澤：夢 熱烈招生中！)</div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+# =========================
+# 💛 自由斗內（PayPal）
+# =========================
+st.markdown(
+    """
     <div class="donate-box">
       <div class="donate-title">☕ 支持開發者</div>
       <div class="donate-text">
@@ -493,16 +506,4 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-# =========================
-# 💛 自由斗內（PayPal）
-# =========================
-st.markdown("---")
-with st.expander("💛 自由斗內（支持作者）", expanded=False):
-    st.write("如果這個工具對你有幫助，歡迎透過 PayPal 自由支持作者 🙏")
-    st.link_button(
-        "💳 使用 PayPal 支持",
-        "https://paypal.me/katherinechou"
-    )
-    st.caption("※ 付款流程由 PayPal 處理，不會顯示你的銀行資訊。")
 
