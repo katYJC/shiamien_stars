@@ -212,7 +212,7 @@ def bulk_ui(title: str, hint: str):
         f"""
         <div class="bulk-box">
           <div class="bulk-title">⚡ {title}</div>
-          <div class="bulk-hint">{hint}</div>
+          <div class="bulk-hint" style="color:#9BE7FF !important;">{hint}</div>
         </div>
         """,
         unsafe_allow_html=True
