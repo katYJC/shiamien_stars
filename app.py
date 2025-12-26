@@ -127,6 +127,17 @@ def get_visits_only():
     client = gspread.authorize(creds)
     ws = client.open_by_key(SPREADSHEET_ID).worksheet(SHEET_NAME)
     return int(ws.acell("A2").value)
+def get_and_update_visits():
+    sa_info = json.loads(st.secrets["gcp"]["json"])
+    creds = Credentials.from_service_account_info(sa_info, scopes=SCOPE)
+
+    client = gspread.authorize(creds)
+    ws = client.open_by_key(SPREADSHEET_ID).worksheet(SHEET_NAME)
+
+    count = int(ws.acell("A2").value)
+    count += 1
+    ws.update("A2", [[count]])
+    return count
 
 # =========================
 # 全站訪客計數（Google Sheet）
