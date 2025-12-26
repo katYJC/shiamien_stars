@@ -30,11 +30,17 @@ def get_grade(score: int) -> str:
     else:
         return "D"
 
+def apply_bulk(prefix: str, count: int):
+    """把 bulk 值實際寫入該項目的所有欄位"""
+    bulk_val = st.session_state.get(f"{prefix}_bulk", BASE_LV)
+    for i in range(count):
+        st.session_state[f"{prefix}_{i}"] = bulk_val
+
 # =========================
 # Title
 # =========================
 st.title("⭐ 第 2 季｜原初之星計算器")
-st.caption("所有項目以 130 為基礎，快速輸入可一鍵套用到整組。")
+st.caption("快速輸入會『實際套用』到所有欄位（使用 session_state）。")
 
 # =========================
 # Sidebar
@@ -64,19 +70,19 @@ with c1:
 with c2:
     char_lv = st.number_input("目前角色等級", min_value=1, value=130)
 
-char_eff = effective_lv(char_lv)
-score_char = char_eff * p_char
-st.caption(f"角色計分：{char_lv} → +{char_eff} 級 → {score_char} 分")
+score_char = effective_lv(char_lv) * p_char
 
 # =========================
-# Equipment (5)
+# 裝備（5）
 # =========================
 st.subheader("🛡 裝備（5 欄）")
-equip_bulk = st.number_input(
+
+st.number_input(
     "快速輸入裝備等級（套用到全部）",
-    min_value=1,
+    key="equip_bulk",
     value=130,
-    key="equip_bulk"
+    on_change=apply_bulk,
+    kwargs={"prefix": "equip", "count": 5}
 )
 
 equip_cols = st.columns(5)
@@ -86,22 +92,24 @@ for i in range(5):
     with equip_cols[i]:
         lv = st.number_input(
             f"裝備 {i+1}",
-            value=equip_bulk,
-            key=f"equip_{i}"
+            key=f"equip_{i}",
+            value=130
         )
         equip_eff.append(effective_lv(lv))
 
 score_equip = sum(equip_eff) * p_equip
 
 # =========================
-# Skills (8)
+# 技能（8）
 # =========================
 st.subheader("📘 技能（8 欄）")
-skill_bulk = st.number_input(
+
+st.number_input(
     "快速輸入技能等級（套用到全部）",
-    min_value=1,
+    key="skill_bulk",
     value=130,
-    key="skill_bulk"
+    on_change=apply_bulk,
+    kwargs={"prefix": "skill", "count": 8}
 )
 
 skill_cols = st.columns(4)
@@ -111,22 +119,24 @@ for i in range(8):
     with skill_cols[i % 4]:
         lv = st.number_input(
             f"技能 {i+1}",
-            value=skill_bulk,
-            key=f"skill_{i}"
+            key=f"skill_{i}",
+            value=130
         )
         skill_eff.append(effective_lv(lv))
 
 score_skill = sum(skill_eff) * p_skill
 
 # =========================
-# Beasts (4)
+# 幻獸（4）
 # =========================
 st.subheader("🐉 幻獸（4 欄）")
-beast_bulk = st.number_input(
+
+st.number_input(
     "快速輸入幻獸等級（套用到全部）",
-    min_value=1,
+    key="beast_bulk",
     value=130,
-    key="beast_bulk"
+    on_change=apply_bulk,
+    kwargs={"prefix": "beast", "count": 4}
 )
 
 beast_cols = st.columns(4)
@@ -136,27 +146,30 @@ for i in range(4):
     with beast_cols[i]:
         lv = st.number_input(
             f"幻獸 {i+1}",
-            value=beast_bulk,
-            key=f"beast_{i}"
+            key=f"beast_{i}",
+            value=130
         )
         beast_eff.append(effective_lv(lv))
 
 score_beast = sum(beast_eff) * p_beast
 
 # =========================
-# Relics (光暗風水火 × 4)
+# 古遺物（5 屬性 × 4）
 # =========================
-st.subheader("🔮 古遺物（光 / 暗 / 風 / 水 / 火）")
+st.subheader("🔮 古遺物")
 
 elements = ["光", "暗", "風", "水", "火"]
 relic_eff = []
 
 for element in elements:
-    bulk = st.number_input(
-        f"{element}系古遺物快速輸入（4 欄）",
-        min_value=1,
+    st.markdown(f"### {element}")
+
+    st.number_input(
+        f"{element}系快速輸入",
+        key=f"{element}_bulk",
         value=130,
-        key=f"{element}_bulk"
+        on_change=apply_bulk,
+        kwargs={"prefix": element, "count": 4}
     )
 
     cols = st.columns(4)
@@ -164,8 +177,8 @@ for element in elements:
         with cols[i]:
             lv = st.number_input(
                 f"{element}-{i+1}",
-                value=bulk,
-                key=f"{element}_{i}"
+                key=f"{element}_{i}",
+                value=130
             )
             relic_eff.append(effective_lv(lv))
 
@@ -203,14 +216,3 @@ st.markdown("### ⭐ 原初之星總計")
 g1, g2 = st.columns(2)
 g1.metric("上季原初之星", f"{prev_season_stars:,}")
 g2.metric("總原初之星", f"{grand_total_stars:,}")
-
-with st.expander("📊 得分明細"):
-    st.write({
-        "角色": score_char,
-        "裝備": score_equip,
-        "技能": score_skill,
-        "幻獸": score_beast,
-        "古遺物": score_relic,
-        "本季總分": season_score,
-        "本季評級": season_grade
-    })
