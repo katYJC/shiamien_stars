@@ -90,10 +90,10 @@ st.markdown(
       }
       .bulk-title { font-weight: 800; font-size: 0.98rem; }
       .bulk-hint  { color: rgba(0,0,0,0.6); font-size: 0.85rem; }
-      /* 黑色模式：快速輸入說明文字 */
       [data-theme="dark"] .bulk-hint {
-      color: #9BE7FF !important;   /* 淡藍色，黑底清楚 */
+      color: rgba(255, 243, 205, 0.95) !important;  /* 淡米黃 */
       }
+     
       .brand-footer {
         margin-top: 48px;
         padding: 18px 12px;
