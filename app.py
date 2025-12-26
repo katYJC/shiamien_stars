@@ -100,7 +100,7 @@ def effective_relic_lv(lv: int) -> int:
 # 全站訪客計數（Google Sheet）
 # =========================
 SCOPE = ["https://www.googleapis.com/auth/spreadsheets"]
-SPREADSHEET_NAME = "visitor_counter"
+SPREADSHEET_ID = "1F4fAB14ae2AxTPMGRnMqvh5BiouCdTKND8atqufWG98"
 SHEET_NAME = "工作表1"
 
 def get_and_update_visits():
@@ -108,7 +108,7 @@ def get_and_update_visits():
     creds = Credentials.from_service_account_info(sa_info, scopes=SCOPE)
 
     client = gspread.authorize(creds)
-    ws = client.open(SPREADSHEET_NAME).worksheet(SHEET_NAME)
+    ws = client.open(SPREADSHEET_ID).worksheet(SHEET_NAME)
 
     count = int(ws.acell("A2").value)
     count += 1
