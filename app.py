@@ -108,7 +108,7 @@ def get_and_update_visits():
     creds = Credentials.from_service_account_info(sa_info, scopes=SCOPE)
 
     client = gspread.authorize(creds)
-    ws = client.open(SPREADSHEET_ID).worksheet(SHEET_NAME)
+    ws = client.open_by_key(SPREADSHEET_ID).worksheet(SHEET_NAME)
 
     count = int(ws.acell("A2").value)
     count += 1
