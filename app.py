@@ -90,7 +90,7 @@ st.markdown(
       }
       .bulk-title { font-weight: 800; font-size: 0.98rem; }
       .bulk-hint  { color: rgba(0,0,0,0.6); font-size: 0.85rem; }
-      [data-theme="dark"] .bulk-hint {
+      .stApp [data-theme="dark"] .bulk-hint {
       color: rgba(255, 243, 205, 0.95) !important;  /* 淡米黃 */
       }
      
