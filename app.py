@@ -10,10 +10,19 @@ st.set_page_config(
 )
 
 # =========================
-# Constants
+# 固定規則（不顯示給使用者）
 # =========================
 BASE_LV = 130
 RELIC_BASE_LV = 13
+
+BASE_STARS = 45       # 本季初始原初之星
+CONVERT_DIV = 27      # 原初之星換算除數（總分 ÷ 27）
+
+P_CHAR = 100          # 角色 +1 加分
+P_EQUIP = 18          # 裝備 +1 加分
+P_SKILL = 7           # 技能 +1 加分
+P_BEAST = 8           # 幻獸 +1 加分
+P_RELIC = 33          # 古遺物 +1 加分
 
 # =========================
 # Styling
@@ -29,14 +38,9 @@ st.markdown(
         border-radius: 12px;
         margin: 6px 0 10px 0;
       }
-      .bulk-title {
-        font-weight: 800;
-        font-size: 0.98rem;
-      }
-      .bulk-hint {
-        color: rgba(0,0,0,0.6);
-        font-size: 0.85rem;
-      }
+      .bulk-title { font-weight: 800; font-size: 0.98rem; }
+      .bulk-hint  { color: rgba(0,0,0,0.6); font-size: 0.85rem; }
+
       .brand-footer {
         margin-top: 48px;
         padding: 18px 12px;
@@ -55,17 +59,6 @@ st.markdown(
         font-size: 1.2rem;
         font-weight: 900;
         color: #ff9800;
-      }
-      .rule-card {
-        background: rgba(0,0,0,0.03);
-        border: 1px solid rgba(0,0,0,0.07);
-        padding: 10px 12px;
-        border-radius: 12px;
-        margin: 10px 0 14px 0;
-      }
-      .rule-title {
-        font-weight: 800;
-        margin-bottom: 6px;
       }
     </style>
     """,
@@ -100,7 +93,7 @@ def get_grade(score: int) -> str:
 def apply_bulk(prefix: str, count: int):
     """
     只有在 bulk 值『真的改變』時才套用，
-    之後允許使用者微調單一欄位
+    套用後允許使用者微調單一欄位（不會被 rerun 覆蓋）
     """
     bulk_key = f"{prefix}_bulk"
     last_key = f"{prefix}_last_bulk"
@@ -129,50 +122,20 @@ def bulk_ui(title: str, hint: str):
 # Title
 # =========================
 st.title("⭐ 原初之星計算器｜Season 2")
-st.markdown(
-    """
-    <div class="rule-card">
-      <div class="rule-title">規則摘要</div>
-      <div>• 角色 / 裝備 / 技能 / 幻獸：基礎 130（只計算超過 130 的部分）</div>
-      <div>• 古遺物：基礎 13（只計算超過 13 的部分）</div>
-      <div>• 快速輸入只在值改變時套用，套用後仍可單格微調，分數會正確計入</div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.caption("快速輸入只在變更時套用，其後可自由微調，分數會正確計算。")
 
 # =========================
-# Settings (No sidebar)
+# 上季原初之星（保留：用於最後合計）
 # =========================
-st.subheader("⚙️ 設定（無 Sidebar）")
-s1, s2, s3 = st.columns(3)
-with s1:
-    base_stars = st.number_input("本季初始原初之星", min_value=0, value=45, step=1)
-with s2:
-    convert_div = st.number_input("原初之星換算除數（總分 ÷ X）", min_value=1, value=27, step=1)
-with s3:
-    prev_season_stars = st.number_input("上季原初之星", min_value=0, value=0, step=1)
-
-st.markdown("### 📈 加分規則")
-r1, r2, r3, r4, r5 = st.columns(5)
-with r1:
-    p_char = st.number_input("角色 +1 加分", min_value=0, value=100, step=1)
-with r2:
-    p_equip = st.number_input("裝備 +1 加分", min_value=0, value=18, step=1)
-with r3:
-    p_skill = st.number_input("技能 +1 加分", min_value=0, value=7, step=1)
-with r4:
-    p_beast = st.number_input("幻獸 +1 加分", min_value=0, value=8, step=1)
-with r5:
-    p_relic = st.number_input("古遺物 +1 加分", min_value=0, value=33, step=1)
+prev_season_stars = st.number_input("上季原初之星", min_value=0, value=0, step=1)
 
 # =========================
-# Character
+# 角色
 # =========================
 st.subheader("🧍 角色")
 char_lv = st.number_input("目前角色等級（基礎 130）", value=130, min_value=1, step=1)
 char_eff = effective_lv(char_lv)
-score_char = char_eff * p_char
+score_char = char_eff * P_CHAR
 st.caption(f"角色計分：max(0, {char_lv} − 130) = {char_eff} 級 → {score_char} 分")
 
 # =========================
@@ -198,7 +161,7 @@ for i in range(5):
     with cols[i]:
         lv = st.number_input(f"裝備 {i+1}", key=f"equip_{i}", value=130, min_value=1, step=1)
         equip_eff.append(effective_lv(lv))
-score_equip = sum(equip_eff) * p_equip
+score_equip = sum(equip_eff) * P_EQUIP
 
 # =========================
 # 技能（8）
@@ -223,7 +186,7 @@ for i in range(8):
     with cols[i % 4]:
         lv = st.number_input(f"技能 {i+1}", key=f"skill_{i}", value=130, min_value=1, step=1)
         skill_eff.append(effective_lv(lv))
-score_skill = sum(skill_eff) * p_skill
+score_skill = sum(skill_eff) * P_SKILL
 
 # =========================
 # 幻獸（4）
@@ -248,10 +211,10 @@ for i in range(4):
     with cols[i]:
         lv = st.number_input(f"幻獸 {i+1}", key=f"beast_{i}", value=130, min_value=1, step=1)
         beast_eff.append(effective_lv(lv))
-score_beast = sum(beast_eff) * p_beast
+score_beast = sum(beast_eff) * P_BEAST
 
 # =========================
-# 古遺物（20，基礎 13）
+# 古遺物（20，基礎 13；仍分光暗風水火顯示）
 # =========================
 st.subheader("🔮 古遺物（光 / 暗 / 風 / 水 / 火）")
 bulk_ui("古遺物總快速輸入（套用 20 欄）", "基礎 13；只在改變時覆蓋；套用後可再微調")
@@ -284,7 +247,7 @@ for element in elements:
             )
             relic_eff.append(effective_relic_lv(lv))
             idx += 1
-score_relic = sum(relic_eff) * p_relic
+score_relic = sum(relic_eff) * P_RELIC
 
 # =========================
 # Compute
@@ -292,8 +255,8 @@ score_relic = sum(relic_eff) * p_relic
 season_score = score_char + score_equip + score_skill + score_beast + score_relic
 season_grade = get_grade(season_score)
 
-earned_stars = season_score // convert_div
-season_total_stars = base_stars + earned_stars
+earned_stars = season_score // CONVERT_DIV
+season_total_stars = BASE_STARS + earned_stars
 grand_total_stars = prev_season_stars + season_total_stars
 
 # =========================
