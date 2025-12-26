@@ -159,9 +159,6 @@ else:
     # 建議你做一個只讀不寫的函式，避免多次寫入
     st.session_state.total_visits = get_visits_only()  # 你需要新增此函式
 
-st.caption(f"👀 全站累積拜訪次數：{st.session_state.total_visits:,}")
-
-
 def get_grade(score: int) -> str:
     if score >= 15900:
         return "SSS"
