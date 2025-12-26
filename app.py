@@ -14,21 +14,6 @@ st.set_page_config(
     page_icon="⭐",
     layout="wide"
 )
-st.markdown(
-    """
-    <style>
-    [data-theme="dark"] .quick-input-hint {
-        color: #9BE7FF;
-        font-weight: 600;
-    }
-
-    [data-theme="light"] .quick-input-hint {
-        color: #555555;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 
 # =========================
 # 訪客節流設定：N 秒內同一人不重複計入
@@ -105,7 +90,10 @@ st.markdown(
       }
       .bulk-title { font-weight: 800; font-size: 0.98rem; }
       .bulk-hint  { color: rgba(0,0,0,0.6); font-size: 0.85rem; }
-
+      /* 黑色模式：快速輸入說明文字 */
+      [data-theme="dark"] .bulk-hint {
+      color: #9BE7FF !important;   /* 淡藍色，黑底清楚 */
+      }
       .brand-footer {
         margin-top: 48px;
         padding: 18px 12px;
