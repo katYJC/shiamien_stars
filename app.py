@@ -2,7 +2,9 @@ import streamlit as st
 import gspread
 import json
 from google.oauth2.service_account import Credentials
-
+import time
+import uuid
+from streamlit_cookies_manager import EncryptedCookieManager
 
 # =========================
 # Page config
@@ -12,6 +14,30 @@ st.set_page_config(
     page_icon="⭐",
     layout="wide"
 )
+# =========================
+# 訪客節流設定：N 秒內同一人不重複計入
+# =========================
+THROTTLE_SECONDS = 10 * 60  # 10 分鐘（你可改成 5*60 等）
+
+cookies = EncryptedCookieManager(
+    prefix="shrimp_",
+    password="PLEASE_CHANGE_THIS_TO_A_RANDOM_LONG_STRING_32+CHARS"
+)
+if not cookies.ready():
+    st.stop()
+
+# 產生/取得訪客ID（存在 cookie）
+visitor_id = cookies.get("vid")
+if not visitor_id:
+    visitor_id = str(uuid.uuid4())
+    cookies["vid"] = visitor_id
+
+# 上次計入時間（存在 cookie）
+last_counted = cookies.get("last_counted")
+now = int(time.time())
+last_counted_ts = int(last_counted) if last_counted and last_counted.isdigit() else 0
+
+should_count = (now - last_counted_ts) > THROTTLE_SECONDS
 
 # =========================
 # 固定規則（不顯示給使用者）
@@ -93,9 +119,15 @@ st.markdown(
 # =========================
 def effective_lv(lv: int) -> int:
     return max(0, lv - BASE_LV)
-
 def effective_relic_lv(lv: int) -> int:
     return max(0, lv - RELIC_BASE_LV)
+def get_visits_only():
+    sa_info = json.loads(st.secrets["gcp"]["json"])
+    creds = Credentials.from_service_account_info(sa_info, scopes=SCOPE)
+    client = gspread.authorize(creds)
+    ws = client.open_by_key(SPREADSHEET_ID).worksheet(SHEET_NAME)
+    return int(ws.acell("A2").value)
+
 # =========================
 # 全站訪客計數（Google Sheet）
 # =========================
@@ -103,17 +135,21 @@ SCOPE = ["https://www.googleapis.com/auth/spreadsheets"]
 SPREADSHEET_ID = "1F4fAB14ae2AxTPMGRnMqvh5BiouCdTKND8atqufWG98"
 SHEET_NAME = "工作表1"
 
-def get_and_update_visits():
-    sa_info = json.loads(st.secrets["gcp"]["json"])
-    creds = Credentials.from_service_account_info(sa_info, scopes=SCOPE)
+if "total_visits" not in st.session_state:
+    st.session_state.total_visits = None
 
-    client = gspread.authorize(creds)
-    ws = client.open_by_key(SPREADSHEET_ID).worksheet(SHEET_NAME)
+if should_count:
+    # ✅ 只有超過節流時間才+1
+    st.session_state.total_visits = get_and_update_visits()
+    cookies["last_counted"] = str(now)
+    cookies.save()
+else:
+    # ✅ 節流期間：不+1，但仍顯示目前總數（讀A2即可）
+    # 建議你做一個只讀不寫的函式，避免多次寫入
+    st.session_state.total_visits = get_visits_only()  # 你需要新增此函式
 
-    count = int(ws.acell("A2").value)
-    count += 1
-    ws.update("A2", [[count]])
-    return count
+st.caption(f"👀 全站累積拜訪次數：{st.session_state.total_visits:,}")
+
 
 def get_grade(score: int) -> str:
     if score >= 15900:
