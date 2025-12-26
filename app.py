@@ -98,21 +98,21 @@ def effective_relic_lv(lv: int) -> int:
 # 全站訪客計數（Google Sheet）
 # =========================
 SCOPE = ["https://www.googleapis.com/auth/spreadsheets"]
-SPREADSHEET_NAME = "visitor_counter"   # 你的試算表名稱
-SHEET_NAME = "工作表1"                 # 如果你沒改名，通常就是這個
+SPREADSHEET_NAME = "visitor_counter"
+SHEET_NAME = "工作表1"  # 你的工作表名稱（通常是 工作表1）
 
 def get_and_update_visits():
-    creds = Credentials.from_service_account_file(
-        "service_account.json",   # 如果你是本機跑
+    # ✅ Streamlit Cloud：從 Secrets 讀 service account JSON
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp"],
         scopes=SCOPE
     )
     client = gspread.authorize(creds)
-    sheet = client.open(SPREADSHEET_NAME).worksheet(SHEET_NAME)
+    ws = client.open(SPREADSHEET_NAME).worksheet(SHEET_NAME)
 
-    count = int(sheet.acell("A2").value)
+    count = int(ws.acell("A2").value)
     count += 1
-    sheet.update("A2", count)
-
+    ws.update("A2", count)
     return count
 
 def get_grade(score: int) -> str:
