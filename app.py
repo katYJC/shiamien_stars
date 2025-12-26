@@ -1,4 +1,6 @@
 import streamlit as st
+import gspread
+from google.oauth2.service_account import Credentials
 
 # =========================
 # Page config
@@ -92,6 +94,26 @@ def effective_lv(lv: int) -> int:
 
 def effective_relic_lv(lv: int) -> int:
     return max(0, lv - RELIC_BASE_LV)
+# =========================
+# 全站訪客計數（Google Sheet）
+# =========================
+SCOPE = ["https://www.googleapis.com/auth/spreadsheets"]
+SPREADSHEET_NAME = "visitor_counter"   # 你的試算表名稱
+SHEET_NAME = "工作表1"                 # 如果你沒改名，通常就是這個
+
+def get_and_update_visits():
+    creds = Credentials.from_service_account_file(
+        "service_account.json",   # 如果你是本機跑
+        scopes=SCOPE
+    )
+    client = gspread.authorize(creds)
+    sheet = client.open(SPREADSHEET_NAME).worksheet(SHEET_NAME)
+
+    count = int(sheet.acell("A2").value)
+    count += 1
+    sheet.update("A2", count)
+
+    return count
 
 def get_grade(score: int) -> str:
     if score >= 15900:
@@ -153,6 +175,11 @@ def bulk_ui(title: str, hint: str):
 # =========================
 st.title("⭐ 原初之星計算器｜Season 2")
 st.caption("快速輸入只在變更時套用，其後可自由微調，分數會正確計算。")
+# =========================
+# 👀 全站拜訪人數
+# =========================
+total_visits = get_and_update_visits()
+st.caption(f"👀 全站累積拜訪次數：{total_visits:,}")
 
 # =========================
 # 上季原初之星（保留：用於最後合計）
