@@ -4,7 +4,7 @@ import streamlit as st
 # Page config
 # =========================
 st.set_page_config(
-    page_title="第2季 原初之星計算器",
+    page_title="原初之星計算器｜Season 2",
     page_icon="⭐",
     layout="wide"
 )
@@ -16,11 +16,12 @@ BASE_LV = 130          # 角色 / 裝備 / 技能 / 幻獸
 RELIC_BASE_LV = 13     # 古遺物
 
 # =========================
-# Styling：快速輸入區塊
+# Styling
 # =========================
 st.markdown(
     """
     <style>
+      /* 快速輸入卡片 */
       .bulk-box {
         background: rgba(255, 193, 7, 0.10);
         border: 1px solid rgba(255, 193, 7, 0.35);
@@ -39,13 +40,26 @@ st.markdown(
         font-size: 0.85rem;
         margin-bottom: 10px;
       }
-      .footer {
+
+      /* Brand Footer（方案二） */
+      .brand-footer {
+        margin-top: 48px;
+        padding: 18px 12px;
+        background: linear-gradient(90deg, rgba(255,193,7,0.15), rgba(255,193,7,0.04));
+        border-top: 2px solid rgba(255,193,7,0.85);
         text-align: center;
-        color: rgba(0,0,0,0.45);
-        font-size: 0.85rem;
-        margin-top: 40px;
-        padding-top: 12px;
-        border-top: 1px solid rgba(0,0,0,0.08);
+        border-radius: 12px 12px 0 0;
+      }
+      .brand-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+      }
+      .brand-author {
+        font-size: 1.2rem;
+        font-weight: 900;
+        color: #ff9800;
       }
     </style>
     """,
@@ -96,7 +110,7 @@ def bulk_ui(title: str, hint: str):
 # =========================
 # Title
 # =========================
-st.title("⭐ 第 2 季｜原初之星計算器")
+st.title("⭐ 原初之星計算器｜Season 2")
 st.caption("所有項目僅計算『超過基礎等級』的部分。")
 
 # =========================
@@ -119,14 +133,14 @@ p_relic = st.sidebar.number_input("古遺物 +1 加分", value=33)
 # Basic inputs
 # =========================
 c1, c2 = st.columns(2)
-
 with c1:
     prev_season_stars = st.number_input("上季原初之星", min_value=0, value=0, step=1)
-
 with c2:
     char_lv = st.number_input("目前角色等級（基礎 130）", min_value=1, value=130, step=1)
 
-score_char = effective_lv(char_lv) * p_char
+char_eff = effective_lv(char_lv)
+score_char = char_eff * p_char
+st.caption(f"角色計分：max(0, {char_lv} − 130) = {char_eff} 級 → {score_char} 分")
 
 # =========================
 # 裝備（5）
@@ -235,7 +249,7 @@ for element in elements:
 score_relic = sum(relic_eff) * p_relic
 
 # =========================
-# Compute & Output
+# Compute
 # =========================
 season_score = score_char + score_equip + score_skill + score_beast + score_relic
 season_grade = get_grade(season_score)
@@ -244,6 +258,9 @@ earned_stars = season_score // convert_div
 season_total_stars = base_stars + earned_stars
 grand_total_stars = prev_season_stars + season_total_stars
 
+# =========================
+# Output
+# =========================
 st.markdown("---")
 st.subheader("📌 第 2 季結算")
 
@@ -259,9 +276,35 @@ g1.metric("上季原初之星", f"{prev_season_stars:,}")
 g2.metric("總原初之星（上季 + 本季）", f"{grand_total_stars:,}")
 
 # =========================
-# Footer（開發者署名）
+# 得分明細（回復）
+# =========================
+with st.expander("📊 得分明細（各系統貢獻）"):
+    st.write({
+        "角色等級得分": score_char,
+        "裝備得分": score_equip,
+        "技能得分": score_skill,
+        "幻獸得分": score_beast,
+        "古遺物得分": score_relic,
+    })
+    st.markdown("---")
+    st.write({
+        "本季養成總分": season_score,
+        "本季評級": season_grade,
+        "本季獲得原初之星": earned_stars,
+        "本季原初之星合計": season_total_stars,
+        "上季原初之星": prev_season_stars,
+        "總原初之星": grand_total_stars,
+    })
+
+# =========================
+# Brand Footer（方案二）
 # =========================
 st.markdown(
-    '<div class="footer">開發者：甜蝦麵</div>',
-    unsafe_allow_html=True
+    """
+    <div class="brand-footer">
+        <div class="brand-title">原初之星計算器｜Season 2</div>
+        <div class="brand-author">by 甜蝦麵</div>
+    </div>
+    """,
+    unsafe_allow_html=True,
 )
