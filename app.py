@@ -496,7 +496,7 @@ st.markdown(
         如果這個原初之星計算器幫助到你，<br>
         歡迎請我喝杯咖啡，讓工具持續更新 💛
       </div>
-      <a href="https://www.buymeacoffee.com/你的帳號"
+      <a href="https://buymeacoffee.com/katyjc"
          target="_blank"
          class="donate-btn">
         ☕ Buy Me a Coffee
