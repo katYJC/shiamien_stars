@@ -365,15 +365,3 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-# =========================
-# 💛 自由斗內（PayPal）
-# =========================
-st.markdown("---")
-with st.expander("💛 自由斗內（支持作者）", expanded=False):
-    st.write("如果這個工具對你有幫助，歡迎透過 PayPal 自由支持作者 🙏")
-    st.link_button(
-        "💳 使用 PayPal 支持",
-        "https://paypal.me/katherinechou"
-    )
-    st.caption("※ 付款流程由 PayPal 處理，不會顯示你的銀行資訊。")
