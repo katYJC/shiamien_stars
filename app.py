@@ -110,19 +110,24 @@ score_char = effective_lv(char_lv) * p_char
 # （完全不用改）
 
 # =========================
-# 古遺物（20 欄，單一快速輸入 + 5 大標題）
+# 古遺物（20 欄，基礎 = 13）
 # =========================
+RELIC_BASE_LV = 13
+
+def effective_relic_lv(lv: int) -> int:
+    return max(0, lv - RELIC_BASE_LV)
+
 st.subheader("🔮 古遺物")
 
 bulk_ui(
     "古遺物總快速輸入（套用到全部 20 欄）",
-    "輸入一個等級，會立即覆蓋光 / 暗 / 風 / 水 / 火全部古遺物。"
+    "基礎等級為 13，僅計算超過 13 的部分。"
 )
 
 st.number_input(
     "relic_bulk_label",
     key="relic_bulk",
-    value=130,
+    value=13,
     min_value=1,
     step=1,
     label_visibility="collapsed",
@@ -142,10 +147,11 @@ for element in elements:
             lv = st.number_input(
                 f"{element}-{i+1}",
                 key=f"relic_{idx}",
-                value=130,
-                min_value=1
+                value=13,
+                min_value=1,
+                step=1
             )
-            relic_eff.append(effective_lv(lv))
+            relic_eff.append(effective_relic_lv(lv))
             idx += 1
 
 score_relic = sum(relic_eff) * p_relic
