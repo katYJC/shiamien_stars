@@ -14,24 +14,6 @@ BASE_LV = 130
 def effective_lv(lv: int) -> int:
     return max(0, lv - BASE_LV)
 
-def parse_bulk_input(text: str, count: int):
-    """
-    將 '135,132,140' 轉成長度為 count 的等級 list
-    """
-    if not text:
-        return [BASE_LV] * count
-
-    nums = []
-    for x in text.replace("，", ",").split(","):
-        x = x.strip()
-        if x.isdigit():
-            nums.append(int(x))
-
-    if len(nums) < count:
-        nums += [BASE_LV] * (count - len(nums))
-
-    return nums[:count]
-
 def get_grade(score: int) -> str:
     if score >= 15900:
         return "SSS"
@@ -52,7 +34,7 @@ def get_grade(score: int) -> str:
 # Title
 # =========================
 st.title("⭐ 第 2 季｜原初之星計算器")
-st.caption("所有項目皆以 130 為基礎等級，可單欄輸入或一次快速輸入。")
+st.caption("所有項目以 130 為基礎，快速輸入可一鍵套用到整組。")
 
 # =========================
 # Sidebar
@@ -87,12 +69,16 @@ score_char = char_eff * p_char
 st.caption(f"角色計分：{char_lv} → +{char_eff} 級 → {score_char} 分")
 
 # =========================
-# Equipment
+# Equipment (5)
 # =========================
 st.subheader("🛡 裝備（5 欄）")
-bulk_equip = st.text_input("快速輸入（逗號分隔）", key="equip_bulk")
+equip_bulk = st.number_input(
+    "快速輸入裝備等級（套用到全部）",
+    min_value=1,
+    value=130,
+    key="equip_bulk"
+)
 
-equip_lvs = parse_bulk_input(bulk_equip, 5)
 equip_cols = st.columns(5)
 equip_eff = []
 
@@ -100,7 +86,7 @@ for i in range(5):
     with equip_cols[i]:
         lv = st.number_input(
             f"裝備 {i+1}",
-            value=equip_lvs[i],
+            value=equip_bulk,
             key=f"equip_{i}"
         )
         equip_eff.append(effective_lv(lv))
@@ -108,12 +94,16 @@ for i in range(5):
 score_equip = sum(equip_eff) * p_equip
 
 # =========================
-# Skills
+# Skills (8)
 # =========================
 st.subheader("📘 技能（8 欄）")
-bulk_skill = st.text_input("快速輸入（逗號分隔）", key="skill_bulk")
+skill_bulk = st.number_input(
+    "快速輸入技能等級（套用到全部）",
+    min_value=1,
+    value=130,
+    key="skill_bulk"
+)
 
-skill_lvs = parse_bulk_input(bulk_skill, 8)
 skill_cols = st.columns(4)
 skill_eff = []
 
@@ -121,7 +111,7 @@ for i in range(8):
     with skill_cols[i % 4]:
         lv = st.number_input(
             f"技能 {i+1}",
-            value=skill_lvs[i],
+            value=skill_bulk,
             key=f"skill_{i}"
         )
         skill_eff.append(effective_lv(lv))
@@ -129,12 +119,16 @@ for i in range(8):
 score_skill = sum(skill_eff) * p_skill
 
 # =========================
-# Beasts
+# Beasts (4)
 # =========================
 st.subheader("🐉 幻獸（4 欄）")
-bulk_beast = st.text_input("快速輸入（逗號分隔）", key="beast_bulk")
+beast_bulk = st.number_input(
+    "快速輸入幻獸等級（套用到全部）",
+    min_value=1,
+    value=130,
+    key="beast_bulk"
+)
 
-beast_lvs = parse_bulk_input(bulk_beast, 4)
 beast_cols = st.columns(4)
 beast_eff = []
 
@@ -142,7 +136,7 @@ for i in range(4):
     with beast_cols[i]:
         lv = st.number_input(
             f"幻獸 {i+1}",
-            value=beast_lvs[i],
+            value=beast_bulk,
             key=f"beast_{i}"
         )
         beast_eff.append(effective_lv(lv))
@@ -150,31 +144,30 @@ for i in range(4):
 score_beast = sum(beast_eff) * p_beast
 
 # =========================
-# Relics
+# Relics (光暗風水火 × 4)
 # =========================
-st.subheader("🔮 古遺物（光暗風水火 × 4）")
-elements = ["光", "暗", "風", "水", "火"]
-bulk_relic = st.text_area(
-    "快速輸入（20 個，依序 光→暗→風→水→火）",
-    height=80
-)
+st.subheader("🔮 古遺物（光 / 暗 / 風 / 水 / 火）")
 
-relic_lvs = parse_bulk_input(bulk_relic, 20)
+elements = ["光", "暗", "風", "水", "火"]
 relic_eff = []
 
-idx = 0
 for element in elements:
-    st.markdown(f"### {element}")
+    bulk = st.number_input(
+        f"{element}系古遺物快速輸入（4 欄）",
+        min_value=1,
+        value=130,
+        key=f"{element}_bulk"
+    )
+
     cols = st.columns(4)
-    for j in range(4):
-        with cols[j]:
+    for i in range(4):
+        with cols[i]:
             lv = st.number_input(
-                f"{element}-{j+1}",
-                value=relic_lvs[idx],
-                key=f"relic_{idx}"
+                f"{element}-{i+1}",
+                value=bulk,
+                key=f"{element}_{i}"
             )
             relic_eff.append(effective_lv(lv))
-            idx += 1
 
 score_relic = sum(relic_eff) * p_relic
 
