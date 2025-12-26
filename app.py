@@ -112,7 +112,7 @@ def get_and_update_visits():
 
     count = int(ws.acell("A2").value)
     count += 1
-    ws.update("A2", count)
+    ws.update("A2", [[count]])
     return count
 
 def get_grade(score: int) -> str:
