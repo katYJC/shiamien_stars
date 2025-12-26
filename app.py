@@ -1,6 +1,8 @@
 import streamlit as st
 import gspread
+import json
 from google.oauth2.service_account import Credentials
+
 
 # =========================
 # Page config
@@ -99,14 +101,12 @@ def effective_relic_lv(lv: int) -> int:
 # =========================
 SCOPE = ["https://www.googleapis.com/auth/spreadsheets"]
 SPREADSHEET_NAME = "visitor_counter"
-SHEET_NAME = "工作表1"  # 你的工作表名稱（通常是 工作表1）
+SHEET_NAME = "工作表1"
 
 def get_and_update_visits():
-    # ✅ Streamlit Cloud：從 Secrets 讀 service account JSON
-    creds = Credentials.from_service_account_info(
-        st.secrets["gcp"],
-        scopes=SCOPE
-    )
+    sa_info = json.loads(st.secrets["gcp"]["json"])
+    creds = Credentials.from_service_account_info(sa_info, scopes=SCOPE)
+
     client = gspread.authorize(creds)
     ws = client.open(SPREADSHEET_NAME).worksheet(SHEET_NAME)
 
