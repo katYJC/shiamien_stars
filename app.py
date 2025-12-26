@@ -337,11 +337,11 @@ g2.metric("總原初之星（上季 + 本季）", f"{grand_total_stars:,}")
 with st.expander("📊 得分明細（各系統貢獻）"):
     st.write({
         "角色等級得分": score_char,
+        "角色經驗%加分": exp_score,
         "裝備得分": score_equip,
         "技能得分": score_skill,
         "幻獸得分": score_beast,
         "古遺物得分": score_relic,
-        "角色經驗%加分": exp_score,
     })
     st.markdown("---")
     st.write({
