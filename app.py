@@ -135,10 +135,17 @@ p_beast = st.sidebar.number_input("幻獸 +1 加分", value=8)
 p_relic = st.sidebar.number_input("古遺物 +1 加分", value=33)
 
 # =========================
-# Character
+# Basic inputs
 # =========================
-char_lv = st.number_input("目前角色等級（基礎 130）", value=130, min_value=1)
-score_char = effective_lv(char_lv) * p_char
+c1, c2 = st.columns(2)
+with c1:
+    prev_season_stars = st.number_input("上季原初之星", min_value=0, value=0, step=1)
+with c2:
+    char_lv = st.number_input("目前角色等級（基礎 130）", min_value=1, value=130, step=1)
+
+char_eff = effective_lv(char_lv)
+score_char = char_eff * p_char
+st.caption(f"角色計分：max(0, {char_lv} − 130) = {char_eff} 級 → {score_char} 分")
 
 # =========================
 # 裝備（5）
@@ -256,20 +263,40 @@ season_total_stars = base_stars + earned_stars
 # Output
 # =========================
 st.markdown("---")
-m1, m2, m3 = st.columns(3)
-m1.metric("本季總分", f"{season_score:,}")
-m2.metric("評級", season_grade)
-m3.metric("本季原初之星", f"{season_total_stars:,}")
+st.subheader("📌 第 2 季結算")
 
-with st.expander("📊 得分明細"):
+m1, m2, m3, m4 = st.columns(4)
+m1.metric("本季養成總分", f"{season_score:,}")
+m2.metric("本季評級", season_grade)
+m3.metric("本季獲得原初之星", f"{earned_stars:,}")
+m4.metric("本季原初之星合計", f"{season_total_stars:,}")
+
+st.markdown("### ⭐ 原初之星總計")
+g1, g2 = st.columns(2)
+g1.metric("上季原初之星", f"{prev_season_stars:,}")
+g2.metric("總原初之星（上季 + 本季）", f"{grand_total_stars:,}")
+
+# =========================
+# 得分明細（回復）
+# =========================
+with st.expander("📊 得分明細（各系統貢獻）"):
     st.write({
-        "角色": score_char,
-        "裝備": score_equip,
-        "技能": score_skill,
-        "幻獸": score_beast,
-        "古遺物": score_relic,
-        "總分": season_score
+        "角色等級得分": score_char,
+        "裝備得分": score_equip,
+        "技能得分": score_skill,
+        "幻獸得分": score_beast,
+        "古遺物得分": score_relic,
     })
+    st.markdown("---")
+    st.write({
+        "本季養成總分": season_score,
+        "本季評級": season_grade,
+        "本季獲得原初之星": earned_stars,
+        "本季原初之星合計": season_total_stars,
+        "上季原初之星": prev_season_stars,
+        "總原初之星": grand_total_stars,
+    })
+
 
 # =========================
 # Brand Footer（方案二）
