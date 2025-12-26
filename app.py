@@ -119,6 +119,44 @@ st.markdown(
       .stApp[data-theme="dark"] div[data-testid="stMarkdownContainer"] .bulk-hint-text * {
       color: #9BE7FF !important;
       }
+      .donate-box {
+  margin-top: 32px;
+  padding: 18px 14px;
+  text-align: center;
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,193,7,0.18),
+    rgba(255,193,7,0.05)
+  );
+}
+
+.donate-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.donate-text {
+  font-size: 0.9rem;
+  opacity: 0.85;
+  margin-bottom: 12px;
+}
+
+.donate-btn {
+  display: inline-block;
+  background: #ffdd00;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 22px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.donate-btn:hover {
+  transform: scale(1.03);
+}
+
 
     </style>
     """,
@@ -439,13 +477,22 @@ with st.expander("📊 得分明細（各系統貢獻）"):
 # =========================
 st.markdown(
     """
-    <div class="brand-footer">
-        <div class="brand-title">原初之星計算器｜Season 2</div>
-        <div class="brand-author">by 甜蝦麵(浮世千澤：夢 熱烈招生中！)</div>
+    <div class="donate-box">
+      <div class="donate-title">☕ 支持開發者</div>
+      <div class="donate-text">
+        如果這個原初之星計算器幫助到你，<br>
+        歡迎請我喝杯咖啡，讓工具持續更新 💛
+      </div>
+      <a href="https://www.buymeacoffee.com/你的帳號"
+         target="_blank"
+         class="donate-btn">
+        ☕ Buy Me a Coffee
+      </a>
     </div>
     """,
-    unsafe_allow_html=True,
+    unsafe_allow_html=True
 )
+
 
 # =========================
 # 💛 自由斗內（PayPal）
