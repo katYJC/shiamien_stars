@@ -14,6 +14,22 @@ st.set_page_config(
     page_icon="⭐",
     layout="wide"
 )
+st.markdown(
+    """
+    <style>
+    [data-theme="dark"] .quick-input-hint {
+        color: #9BE7FF;
+        font-weight: 600;
+    }
+
+    [data-theme="light"] .quick-input-hint {
+        color: #555555;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # =========================
 # 訪客節流設定：N 秒內同一人不重複計入
 # =========================
