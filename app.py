@@ -89,11 +89,7 @@ st.markdown(
         margin: 6px 0 10px 0;
       }
       .bulk-title { font-weight: 800; font-size: 0.98rem; }
-      .bulk-hint  { color: rgba(0,0,0,0.6); font-size: 0.85rem; }
-      .stApp [data-theme="dark"] .bulk-hint {
-      color: rgba(255, 243, 205, 0.95) !important;  /* 淡米黃 */
-      }
-     
+      .bulk-hint  { font-size: 0.85rem; }     
       .brand-footer {
         margin-top: 48px;
         padding: 18px 12px;
@@ -113,6 +109,17 @@ st.markdown(
         font-weight: 900;
         color: #ff9800;
       }
+      /* ✅ 黑色模式：強制改 hint 文字顏色（命中 span） */
+      .stApp[data-theme="dark"] .bulk-hint-text,
+      .stApp[data-theme="dark"] .bulk-hint-text * {
+      color: #9BE7FF !important;
+      }
+      /* ✅ 保底：命中 Streamlit markdown 容器裡的 bulk-hint */
+      .stApp[data-theme="dark"] div[data-testid="stMarkdownContainer"] .bulk-hint-text,
+      .stApp[data-theme="dark"] div[data-testid="stMarkdownContainer"] .bulk-hint-text * {
+      color: #9BE7FF !important;
+      }
+
     </style>
     """,
     unsafe_allow_html=True,
@@ -212,7 +219,7 @@ def bulk_ui(title: str, hint: str):
         f"""
         <div class="bulk-box">
           <div class="bulk-title">⚡ {title}</div>
-          <div class="bulk-hint" style="color:#9BE7FF !important;">{hint}</div>
+          <div class="bulk-hint"><span class="bulk-hint-text">{hint}</span></div>
         </div>
         """,
         unsafe_allow_html=True
