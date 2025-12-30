@@ -838,7 +838,7 @@ with tab_exp_forecast:
     # 🕰 龍之國開服時間顯示
     # =========================
     TZ_TW = timezone(timedelta(hours=8))
-    OPEN_TIME = datetime(2024, 12, 11, 8, 0, 0, tzinfo=TZ_TW)
+    OPEN_TIME = datetime(2025, 12, 11, 8, 0, 0, tzinfo=TZ_TW)
     now = datetime.now(TZ_TW)
 
     delta = now - OPEN_TIME
