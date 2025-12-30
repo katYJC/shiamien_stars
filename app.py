@@ -794,6 +794,39 @@ with tab_cost:
             "古遺物 13→14 會計入 14 的成本。"
         )
         st.write("古遺物石之砂顯示口徑：只顯示『史詩石之砂』，並額外提供『稀有石之砂等價（史詩×5）』作為合成參考。")
+    # =========================
+    #  Brand Footer（方案二）
+    # =========================
+    st.markdown(
+        """
+        <div class="brand-footer">
+            <div class="brand-title">原初之星計算器｜Season 2</div>
+            <div class="brand-author">by 甜蝦麵(浮世千澤：夢 熱烈招生中！)</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # =========================
+    # 💛 自由斗內（PayPal）
+    # =========================
+    st.markdown(
+        """
+        <div class="donate-box">
+          <div class="donate-title">☕ 支持開發者</div>
+          <div class="donate-text">
+            如果這個原初之星計算器幫助到你，<br>
+            歡迎請我喝杯咖啡，讓工具持續更新 💛
+          </div>
+          <a href="https://buymeacoffee.com/katyjc"
+             target="_blank"
+             class="donate-btn">
+            ☕ Buy Me a Coffee
+          </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 import datetime as dt
 
@@ -1072,3 +1105,36 @@ with tab_exp_forecast:
             })
 
         st.info("⚠️ 提醒：如果 EXP_TABLES 尚未貼完整，遇到表中缺少的等級就會停止推算（等級不再往上升）。")
+    # =========================
+    #  Brand Footer（方案二）
+    # =========================
+    st.markdown(
+        """
+        <div class="brand-footer">
+            <div class="brand-title">原初之星計算器｜Season 2</div>
+            <div class="brand-author">by 甜蝦麵(浮世千澤：夢 熱烈招生中！)</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # =========================
+    # 💛 自由斗內（PayPal）
+    # =========================
+    st.markdown(
+        """
+        <div class="donate-box">
+          <div class="donate-title">☕ 支持開發者</div>
+          <div class="donate-text">
+            如果這個原初之星計算器幫助到你，<br>
+            歡迎請我喝杯咖啡，讓工具持續更新 💛
+          </div>
+          <a href="https://buymeacoffee.com/katyjc"
+             target="_blank"
+             class="donate-btn">
+            ☕ Buy Me a Coffee
+          </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
