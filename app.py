@@ -833,6 +833,41 @@ import datetime as dt
 with tab_exp_forecast:
     st.title("⏱️ 等級推算表（到指定日期 08:00）")
     st.caption("現Exp 為『等級內經驗』。日常加速＝每日免費一顆（+2 小時產量/天）；時光結晶＝每顆 +2 小時產量，但只加到總經驗一次。")
+    # =========================
+    # 🕰 龍之國開服時間顯示
+    # =========================
+    TZ_TW = timezone(timedelta(hours=8))
+    OPEN_TIME = datetime(2024, 12, 11, 8, 0, 0, tzinfo=TZ_TW)
+    now = datetime.now(TZ_TW)
+
+    delta = now - OPEN_TIME
+    total_seconds = int(delta.total_seconds())
+
+    days = total_seconds // 86400
+    hours = (total_seconds % 86400) // 3600
+    minutes = (total_seconds % 3600) // 60
+    seconds = total_seconds % 60
+
+    st.markdown(
+        f"""
+        <div style="
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, rgba(255,193,7,0.18), rgba(255,193,7,0.05));
+            border-left: 6px solid #ff9800;
+            margin-bottom: 12px;
+        ">
+          <div style="font-weight:800; font-size:1.05rem;">
+            🐉 龍之國已開啟 {days} 天
+          </div>
+          <div style="font-size:0.9rem; opacity:0.9;">
+            自 2024/12/11 08:00 起經過：
+            <b>{days}</b> 天 <b>{hours}</b> 小時 <b>{minutes}</b> 分 <b>{seconds}</b> 秒
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
     # =========================
     # 1) 版本經驗表（每升 1 級所需 EXP）
