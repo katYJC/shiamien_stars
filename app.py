@@ -829,6 +829,7 @@ with tab_cost:
     )
 
 import datetime as dt
+from datetime import datetime, timezone, timedelta
 
 with tab_exp_forecast:
     st.title("⏱️ 等級推算表（到指定日期 08:00）")
